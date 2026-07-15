@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "Skill(gstack)",
+      "Skill(gstack:*)",
+      "Bash(rtk git *)"
+    ]
+  }
+}
