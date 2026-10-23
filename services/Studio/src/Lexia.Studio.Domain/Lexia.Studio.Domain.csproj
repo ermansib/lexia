@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../../BuildingBlocks/Lexia.BuildingBlocks.Domain/Lexia.BuildingBlocks.Domain.csproj" />
+  </ItemGroup>
+</Project>

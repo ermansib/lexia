@@ -1,0 +1,91 @@
+# Runs all of Lexia locally: `docker compose up --build`, then open http://localhost:3000
+# and sign in as author / author (a local demo account defined in deploy/keycloak/lexia-realm.json).
+# Every image here is free to self-host. Passwords are local development values only.
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: lexia
+      POSTGRES_PASSWORD: lexia
+      POSTGRES_DB: lexia_books
+    ports: ["5432:5432"]
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lexia"]
+      interval: 5s
+      retries: 10
+
+  # Redis 7.2 is the last BSD-licensed Redis. Valkey (valkey/valkey) is a drop-in alternative.
+  redis:
+    image: redis:7.2-alpine
+    ports: ["6379:6379"]
+
+  # Document store for manuscripts, story bibles and layouts (used from Phase 1b, the AI co-writer).
+  mongo:
+    image: mongo:8.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: lexia
+      MONGO_INITDB_ROOT_PASSWORD: lexia
+    ports: ["27017:27017"]
+    volumes: [mongo-data:/data/db]
+
+  # Message bus for events between services (used once services start reacting to each other).
+  rabbitmq:
+    image: rabbitmq:4.1-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: lexia
+      RABBITMQ_DEFAULT_PASS: lexia
+    ports: ["5672:5672", "15672:15672"]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      # Tokens are issued for the browser's URL, while services reach Keycloak on the Docker network.
+      KC_HOSTNAME: http://localhost:8080
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    ports: ["8080:8080"]
+    volumes: [./deploy/keycloak:/opt/keycloak/data/import:ro]
+
+  books:
+    build: { context: ./services, dockerfile: Books/Dockerfile }
+    environment: &service-env
+      ConnectionStrings__BooksDb: Host=postgres;Database=lexia_books;Username=lexia;Password=lexia
+      Database__MigrateOnStartup: "true"
+      Auth__Authority: http://keycloak:8080/realms/lexia
+      Auth__Audience: lexia-api
+      Auth__RequireHttpsMetadata: "false"
+      Cors__Origins__0: http://localhost:3000
+    depends_on:
+      postgres: { condition: service_healthy }
+      keycloak: { condition: service_started }
+
+  studio:
+    build: { context: ./services, dockerfile: Studio/Dockerfile }
+    environment: *service-env
+    depends_on: [keycloak]
+
+  gateway:
+    build: { context: ./services, dockerfile: Gateway/Dockerfile }
+    environment:
+      Cors__Origins__0: http://localhost:3000
+      ReverseProxy__Clusters__books__Destinations__primary__Address: http://books:8080
+      ReverseProxy__Clusters__studio__Destinations__primary__Address: http://studio:8080
+    ports: ["5000:8080"]
+    depends_on: [books, studio]
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:5000
+        VITE_AUTH_MODE: oidc
+    ports: ["3000:80"]
+    depends_on: [gateway]
+
+volumes:
+  postgres-data:
+  mongo-data:
