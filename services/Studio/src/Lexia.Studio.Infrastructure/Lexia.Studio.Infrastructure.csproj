@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="PDFsharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- DejaVu fonts (Bitstream Vera licence, free to embed and redistribute). See Fonts/DEJAVU-LICENSE.txt. -->
+    <EmbeddedResource Include="Fonts/*.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Lexia.Studio.Application/Lexia.Studio.Application.csproj" />
+  </ItemGroup>
+</Project>

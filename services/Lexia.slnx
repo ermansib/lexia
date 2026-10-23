@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/Books/" />
+  <Folder Name="/Books/src/">
+    <Project Path="Books/src/Lexia.Books.Api/Lexia.Books.Api.csproj" />
+    <Project Path="Books/src/Lexia.Books.Application/Lexia.Books.Application.csproj" />
+    <Project Path="Books/src/Lexia.Books.Domain/Lexia.Books.Domain.csproj" />
+    <Project Path="Books/src/Lexia.Books.Infrastructure/Lexia.Books.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Books/tests/">
+    <Project Path="Books/tests/Lexia.Books.ArchitectureTests/Lexia.Books.ArchitectureTests.csproj" />
+    <Project Path="Books/tests/Lexia.Books.UnitTests/Lexia.Books.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/BuildingBlocks/">
+    <Project Path="BuildingBlocks/Lexia.BuildingBlocks.Api/Lexia.BuildingBlocks.Api.csproj" />
+    <Project Path="BuildingBlocks/Lexia.BuildingBlocks.Application/Lexia.BuildingBlocks.Application.csproj" />
+    <Project Path="BuildingBlocks/Lexia.BuildingBlocks.Domain/Lexia.BuildingBlocks.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Gateway/">
+    <Project Path="Gateway/Lexia.Gateway/Lexia.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/Studio/" />
+  <Folder Name="/Studio/src/">
+    <Project Path="Studio/src/Lexia.Studio.Api/Lexia.Studio.Api.csproj" />
+    <Project Path="Studio/src/Lexia.Studio.Application/Lexia.Studio.Application.csproj" />
+    <Project Path="Studio/src/Lexia.Studio.Domain/Lexia.Studio.Domain.csproj" />
+    <Project Path="Studio/src/Lexia.Studio.Infrastructure/Lexia.Studio.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Studio/tests/">
+    <Project Path="Studio/tests/Lexia.Studio.ArchitectureTests/Lexia.Studio.ArchitectureTests.csproj" />
+    <Project Path="Studio/tests/Lexia.Studio.UnitTests/Lexia.Studio.UnitTests.csproj" />
+  </Folder>
+</Solution>
